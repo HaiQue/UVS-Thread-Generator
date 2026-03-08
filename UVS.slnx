@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="../UVS.Tests/UVS.Tests.csproj" Id="6f1c8413-5fd0-4506-b760-7b37666d7a8b" />
+  <Project Path="UVS.csproj" />
+</Solution>

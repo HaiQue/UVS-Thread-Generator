@@ -1,0 +1,106 @@
+﻿<Window x:Class="UVS.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:vm="clr-namespace:UVS.ViewModels"
+        Title="UVS Data Engine" Height="600" Width="850"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <materialDesign:ColorZone Mode="PrimaryMid" Padding="16" materialDesign:ElevationAssist.Elevation="Dp4">
+            <DockPanel>
+                <materialDesign:PackIcon Kind="DatabaseSync" Width="32" Height="32" VerticalAlignment="Center"/>
+                <TextBlock Margin="16,0,0,0" Text="UVS MULTI-THREAD ENGINE" VerticalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+            </DockPanel>
+        </materialDesign:ColorZone>
+
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="280"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <materialDesign:Card Grid.Column="0" Padding="20" VerticalAlignment="Top" Margin="0,0,10,0" materialDesign:ElevationAssist.Elevation="Dp2">
+                <StackPanel>
+                    <TextBlock Text="Configuration" Style="{StaticResource MaterialDesignHeadline6TextBlock}" Margin="0,0,0,20"/>
+
+                    <TextBox materialDesign:HintAssist.Hint="Number of Threads"
+                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                             Text="{Binding ThreadCount, UpdateSourceTrigger=PropertyChanged}"
+                             FontSize="16" Margin="0,0,0,30"/>
+
+                    <Button Command="{Binding StartCommand}" 
+                            Style="{StaticResource MaterialDesignRaisedButton}"
+                            Content="START ENGINE" Height="50" Margin="0,0,0,10"
+                            materialDesign:ButtonAssist.CornerRadius="25"
+                            Background="#4CAF50" BorderBrush="#4CAF50"/>
+
+                    <Button Command="{Binding StopCommand}" 
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            Content="STOP ALL" Height="50"
+                            materialDesign:ButtonAssist.CornerRadius="25"
+                            Foreground="#F44336" BorderBrush="#F44336"/>
+
+                    <StackPanel Margin="0,30,0,0" Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock Text="System Running..." HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" Value="0" IsIndeterminate="True" />
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:Card>
+
+            <materialDesign:Card Grid.Column="1" Padding="10" materialDesign:ElevationAssist.Elevation="Dp2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Real-Time Thread Activity (Last 20)" 
+                               Style="{StaticResource MaterialDesignSubtitle1TextBlock}" 
+                               Margin="10,10,0,10" Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+
+                    <ListView Grid.Row="1" ItemsSource="{Binding RecentLogs}" 
+                              Style="{StaticResource MaterialDesignListView}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ID" DisplayMemberBinding="{Binding ThreadId}" Width="60"/>
+                                <GridViewColumn Header="Timestamp" Width="150">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Time, StringFormat='{}{0:HH:mm:ss.fff}'}" FontWeight="Light"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Data Payload" Width="250">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{DynamicResource PrimaryHueLightBrush}" CornerRadius="4" Padding="8,2">
+                                                <TextBlock Text="{Binding Data}" FontFamily="Consolas" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </materialDesign:Card>
+        </Grid>
+    </Grid>
+</Window>
